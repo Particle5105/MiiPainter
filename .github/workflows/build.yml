@@ -1,0 +1,27 @@
+name: Build 3DS Homebrew
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: devkitpro/devkitarm:latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install 3DS Dependencies
+        run: |
+          sudo dkp-pacman -Syu --noconfirm
+          sudo dkp-pacman -S --noconfirm 3ds-dev
+
+      - name: Compile Application
+        run: |
+          make
+
+      - name: Upload Finished App
+        uses: actions/upload-artifact@v4
+        with:
+          name: MiiPainter-Application
+          path: MiiPainter.3dsx
